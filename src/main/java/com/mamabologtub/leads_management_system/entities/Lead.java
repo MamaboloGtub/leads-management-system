@@ -29,6 +29,7 @@ public class Lead {
     private String leadStatus;
 
     private LocalDateTime createAt;
+    private LocalDateTime updatedAt;
 
 
 }
