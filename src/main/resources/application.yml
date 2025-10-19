@@ -1,0 +1,16 @@
+spring:
+    application:
+        name: leads-management-system
+    main:
+      web-application-type: reactive
+server:
+    port: 8080
+jwt:
+  secret: my-very-secret-key
+  expiration-ms: 3600000
+
+#spring.application.name=leads-management-system
+#spring.main.web-application-type=reactive
+#server.port=8080
+#jwt.secret=my-very-secret-key
+#jwt.expiration-ms=3600000
