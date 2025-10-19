@@ -1,6 +1,6 @@
 package com.mamabologtub.leads_management_system.services;
 
-import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 
 import com.mamabologtub.leads_management_system.dtos.LeadsDto;
 import com.mamabologtub.leads_management_system.entities.Lead;
@@ -12,12 +12,11 @@ import reactor.core.publisher.Mono;
  * @Author Tshepo M Mahudu on Oct 18, 2025.
  */
 
-@Service
 public interface LeadsService {
 
-    public Flux<Lead> getLeads();
+    public Flux<LeadsDto> getLeads(LocalDateTime fromDate, LocalDateTime toDate);
     public Mono<Lead> createLeads(LeadsDto leadsDto);
-    public Mono<LeadsDto> findLeadById(Long id);
+    public Mono<Lead> findLeadById(Long id);
     public Mono<Lead> updateLead(Long id, LeadsDto leadsDto);
     public Mono<Void> deleteLead(Long id);
 
