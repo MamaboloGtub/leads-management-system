@@ -25,7 +25,7 @@ public class LeadsDto {
 
     private String leadStatus;
 
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
 }

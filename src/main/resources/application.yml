@@ -3,11 +3,28 @@ spring:
         name: leads-management-system
     main:
       web-application-type: reactive
+    r2dbc:
+      url: r2dbc:postgresql://localhost:5432/postgres
+      username: postgres
+      password: Tshepo123
+    sql:
+      init:
+        mode: ALWAYS
+      
 server:
     port: 8080
 jwt:
-  secret: my-very-secret-key
+  secret: my-very-very-secret-key-for-leads
   expiration-ms: 3600000
+#---
+#spring:
+#    r2dbc:
+#      url: r2dbc:postgresql://postgres:5432/leadsdb
+#      username: postgres
+#    sql:
+#      init:
+#        mode: ALWAYS
+#    
 
 #spring.application.name=leads-management-system
 #spring.main.web-application-type=reactive
