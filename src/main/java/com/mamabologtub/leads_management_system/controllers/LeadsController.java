@@ -51,7 +51,7 @@ public class LeadsController {
     }
 
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<Lead>> updateLead(@PathVariable Long id, LeadsDto dto) {
+    public Mono<ResponseEntity<Lead>> updateLead(@PathVariable Long id, @RequestBody LeadsDto dto) {
         return leadsService.updateLead(id, dto).map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }

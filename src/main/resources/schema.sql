@@ -1,0 +1,11 @@
+DROP TABLE IF EXISTS leads;
+
+CREATE TABLE leads (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    lead_source VARCHAR(100),
+    lead_status VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

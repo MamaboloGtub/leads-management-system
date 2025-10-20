@@ -41,7 +41,7 @@ public class LeadsServiceImpl implements LeadsService {
                 l.getEmail(),
                 l.getLeadSource(),
                 l.getLeadStatus(),
-                l.getCreateAt(),
+                l.getCreatedAt(),
                 l.getUpdatedAt()
                 ));
     }
@@ -71,7 +71,7 @@ public class LeadsServiceImpl implements LeadsService {
             ex.setEmail(leadsDto.getEmail());
             ex.setLeadSource(leadsDto.getLeadSource());
             ex.setLeadStatus(leadsDto.getLeadStatus());
-            ex.setUpdatedAt(leadsDto.getUpdatedAt());
+            ex.setUpdatedAt(LocalDateTime.now());
             return leadsRepository.save(ex);
         });
     }
@@ -87,7 +87,7 @@ public class LeadsServiceImpl implements LeadsService {
         entity.setLeadStatus(dto.getLeadStatus());
         entity.setLeadSource(dto.getLeadSource());
         entity.setEmail(dto.getEmail());
-        entity.setCreateAt(dto.getCreateAt());
+        entity.setCreatedAt(LocalDateTime.now());
         return entity;
     }
 

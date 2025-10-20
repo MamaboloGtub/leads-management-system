@@ -4,6 +4,7 @@ import java.security.Key;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -16,7 +17,7 @@ import reactor.core.publisher.Mono;
  * @Author Tshepo M Mahudu on Oct 19, 2025.
  */
 
-//@Component
+@Component
 public class JwtUtil {
 
     private final Key key;

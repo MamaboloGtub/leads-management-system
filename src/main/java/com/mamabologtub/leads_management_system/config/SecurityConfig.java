@@ -57,7 +57,9 @@ public class SecurityConfig {
             return Mono.empty();
         });
 
-        jwtAuthFilter.setRequiresAuthenticationMatcher(ServerWebExchangeMatchers.pathMatchers("/api/**"));
+        jwtAuthFilter.setRequiresAuthenticationMatcher(
+            ServerWebExchangeMatchers.pathMatchers("/api/leads/**", "/api/other-protected-paths/**")
+        );
 
         return http
                 .csrf(csrf -> csrf.disable())

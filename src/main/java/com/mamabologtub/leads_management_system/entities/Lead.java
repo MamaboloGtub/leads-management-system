@@ -3,17 +3,22 @@ package com.mamabologtub.leads_management_system.entities;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-import jakarta.persistence.Entity;
 import jakarta.validation.constraints.Email;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @Author Tshepo M Mahudu on Oct 18, 2025.
  */
 
 @Data
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Table("leads")
 public class Lead {
 
     @Id
@@ -24,11 +29,16 @@ public class Lead {
     @Email
     private String email;
 
+    @Column("lead_source")
     private String leadSource;
 
+    @Column("lead_status")
     private String leadStatus;
 
-    private LocalDateTime createAt;
+    @Column("created_at")
+    private LocalDateTime createdAt;
+
+    @Column("updated_at")
     private LocalDateTime updatedAt;
 
 
