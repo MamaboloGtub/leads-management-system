@@ -16,6 +16,9 @@ server:
 jwt:
   secret: my-very-very-secret-key-for-leads
   expiration-ms: 3600000
+
+api:
+  source: leads-management-system-api
 #---
 #spring:
 #    r2dbc:

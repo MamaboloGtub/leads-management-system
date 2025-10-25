@@ -41,8 +41,8 @@ public class LeadsController {
 
     @GetMapping("/{id}")
     public Mono<ResponseEntity<Lead>> getLeadById(@PathVariable Long id) {
-        return leadsService.findLeadById(id).map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+        return leadsService.findLeadById(id)
+                .map(ResponseEntity::ok);
     }
 
     @PostMapping
@@ -52,8 +52,8 @@ public class LeadsController {
 
     @PutMapping("/{id}")
     public Mono<ResponseEntity<Lead>> updateLead(@PathVariable Long id, @RequestBody LeadsDto dto) {
-        return leadsService.updateLead(id, dto).map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+        return leadsService.updateLead(id, dto)
+                .map(ResponseEntity::ok);
     }
 
     @DeleteMapping("/{id}")

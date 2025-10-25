@@ -28,4 +28,15 @@ public class LeadsDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    //        {
+    //            "name": "John Doe",
+    //            "email": "john@example.com",
+    //            "lead_status": "new",
+    //            "lead_source": "website"
+    //          }
+    //    {
+    //        "email": "test@example.com",
+    //        "password": "password123"
+    //      }
+
 }
