@@ -29,12 +29,12 @@ public class JwtUtil {
         this.expirationMs = expirationMs;
     }
 
-    public String generateToken(String username) {
+    public String generateToken(String email) {
         Date now = new Date();
         Date exp = new Date(now.getTime() + expirationMs);
         return Jwts.builder()
                 .claims()
-                .subject(username)
+                .subject(email)
                 .issuedAt(now)
                 .expiration(exp)
                 .and()

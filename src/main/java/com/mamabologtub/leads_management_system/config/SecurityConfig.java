@@ -10,12 +10,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.config.web.server.ServerHttpSecurity.CsrfSpec;
+import org.springframework.security.config.web.server.ServerHttpSecurity.FormLoginSpec;
+import org.springframework.security.config.web.server.ServerHttpSecurity.HttpBasicSpec;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
+import org.springframework.security.web.server.util.matcher.OrServerWebExchangeMatcher;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 
 import com.mamabologtub.leads_management_system.util.JwtUtil;
@@ -31,22 +34,21 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private static final String LEADS_PATH = "/api/leads/**";
     private final JwtUtil jwtUtil;
 
     @Bean
     public SecurityWebFilterChain leadSecurityWebFilterChain(ServerHttpSecurity http) {
-        AuthenticationWebFilter jwtAuthFilter = new AuthenticationWebFilter(new ReactiveAuthenticationManager() {
+        ReactiveAuthenticationManager authManager = authentication -> {
+            String token = (String) authentication.getCredentials();
+            return jwtUtil.validateAndGetUsername(token)
+                    .map(u -> {
+                        List<GrantedAuthority> auths = List.of(new SimpleGrantedAuthority("ROLE_USER"));
+                        return new UsernamePasswordAuthenticationToken(u, token, auths);
+                    });
+        };
 
-            @Override
-            public Mono<Authentication> authenticate(Authentication authentication) {
-                String token = (String) authentication.getCredentials();
-                return jwtUtil.validateAndGetUsername(token)
-                        .map(u -> {
-                            List<GrantedAuthority> auths = List.of(new SimpleGrantedAuthority("ROLE_USER"));
-                            return new UsernamePasswordAuthenticationToken(u, token, auths);
-                        });
-            }
-        });
+        AuthenticationWebFilter jwtAuthFilter = new AuthenticationWebFilter(authManager);
 
         jwtAuthFilter.setServerAuthenticationConverter(ex -> {
             String authHeader = ex.getRequest().getHeaders().getFirst("Authorization");
@@ -58,13 +60,18 @@ public class SecurityConfig {
         });
 
         jwtAuthFilter.setRequiresAuthenticationMatcher(
-            ServerWebExchangeMatchers.pathMatchers("/api/leads/**", "/api/other-protected-paths/**")
+            new OrServerWebExchangeMatcher(
+                ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, LEADS_PATH),
+                ServerWebExchangeMatchers.pathMatchers(HttpMethod.PUT, LEADS_PATH),
+                ServerWebExchangeMatchers.pathMatchers(HttpMethod.DELETE, LEADS_PATH),
+                ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, "/api/leads/*")
+            )
         );
 
         return http
-                .csrf(csrf -> csrf.disable())
-                .httpBasic(httpBasic -> httpBasic.disable())
-                .formLogin(form -> form.disable())
+                .csrf(CsrfSpec::disable)
+                .httpBasic(HttpBasicSpec::disable)
+                .formLogin(FormLoginSpec::disable)
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers("/api/auth/**").permitAll()
