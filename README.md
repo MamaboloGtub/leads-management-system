@@ -8,8 +8,8 @@ A reactive Spring Boot application for managing leads with JWT authentication, b
 - **JWT Authentication**: Secure API endpoints with JWT tokens
 - **Database Integration**: PostgreSQL with R2DBC for reactive database access
 - **RESTful API**: Complete CRUD operations for lead management
-- **Validation**: Request validation using Spring Boot Validation
-- **Security**: Spring Security integration for authentication and authorization
+- **Error Handling**: Comprehensive exception handling with custom error responses
+- **CORS Support**: Cross-origin requests enabled for frontend integration
 - **Auto Database Schema**: Automatic database schema creation on startup
 
 ## 🛠 Tech Stack
@@ -28,26 +28,10 @@ A reactive Spring Boot application for managing leads with JWT authentication, b
 
 Before running this application, make sure you have the following installed:
 
-### Required Software
-1. **Java 21** or higher
-   - Download from [Oracle JDK](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html) or [OpenJDK](https://adoptium.net/)
-   - Verify installation: `java -version`
-
-2. **Maven 3.6+** (or use the included Maven wrapper)
-   - Download from [Apache Maven](https://maven.apache.org/download.cgi)
-   - Verify installation: `mvn -version`
-
-3. **PostgreSQL 12+**
-   - Download from [PostgreSQL official site](https://www.postgresql.org/download/)
-   - Or use Docker: `docker run --name postgres -e POSTGRES_PASSWORD=yourpassword -p 5432:5432 -d postgres`
-
-4. **Git** (for cloning the repository)
-   - Download from [Git official site](https://git-scm.com/downloads)
-
-### Optional Tools
-- **Postman** or **Insomnia** (for API testing)
-- **pgAdmin** (PostgreSQL administration tool)
-- **Docker** (if you prefer containerized PostgreSQL)
+- **Java 21** or higher
+- **Maven 3.6+** (or use the included Maven wrapper)
+- **PostgreSQL 12+**
+- **Git** (for cloning the repository)
 
 ## 🏗 Project Structure
 
@@ -88,114 +72,44 @@ leads-management-system/
 
 ## 🚀 Getting Started
 
-### Step 1: Clone the Repository
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/MamaboloGtub/leads-management-system.git
 cd leads-management-system
 ```
 
-### Step 2: Database Setup
+### 2. Database Setup
 
-#### Option A: Local PostgreSQL Installation
-
-1. **Install PostgreSQL** (if not already installed)
-2. **Create Database** (Optional - app uses default 'postgres' database)
-3. **Update Configuration** (if needed):
+1. **Install PostgreSQL** and create a database named `postgres`
+2. **Update Configuration** in `src/main/resources/application.yml`:
    
-   Edit `src/main/resources/application.yml`:
    ```yaml
    spring:
      r2dbc:
        url: r2dbc:postgresql://localhost:5432/postgres
        username: postgres
-       password: YourPassword  # Change this to your PostgreSQL password
+       password: Tshepo123  # Change this to your PostgreSQL password
    ```
 
-#### Option B: Docker PostgreSQL
+### 3. Build and Run
 
 ```bash
-# Run PostgreSQL in Docker
-docker run --name leads-postgres -e POSTGRES_PASSWORD=Tshepo123 -p 5432:5432 -d postgres:15
-
-# Verify container is running
-docker ps
-```
-
-### Step 3: Configure Application Properties
-
-Update the database credentials in `src/main/resources/application.yml`:
-
-```yaml
-spring:
-  r2dbc:
-    url: r2dbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: Tshepo123  # Update with your PostgreSQL password
-```
-
-### Step 4: Build the Application
-
-#### Using Maven Wrapper (Recommended)
-
-```bash
-# On Windows
+# Build the application
 .\mvnw clean install
 
-# On macOS/Linux
-./mvnw clean install
-```
-
-#### Using System Maven
-
-```bash
-mvn clean install
-```
-
-### Step 5: Run the Application
-
-#### Option A: Using Maven Wrapper
-
-```bash
-# On Windows
+# Run the application
 .\mvnw spring-boot:run
-
-# On macOS/Linux
-./mvnw spring-boot:run
 ```
 
-#### Option B: Using System Maven
-
-```bash
-mvn spring-boot:run
-```
-
-#### Option C: Using Java directly
-
-```bash
-# First build the JAR
-.\mvnw clean package
-
-# Then run the JAR
-java -jar target/leads-management-system-0.0.1-SNAPSHOT.jar
-```
-
-### Step 6: Verify Application is Running
-
-The application should start on port 8080. You should see output similar to:
-
-```
-Started LeadsManagementSystemApplication in X.XXX seconds (JVM running for X.XXX)
-```
-
-You can verify by opening: http://localhost:8080
+The application will start on port 8080.
 
 ## 🔐 Authentication
 
-The application uses JWT authentication with a simple hardcoded user for demo purposes.
+The application uses JWT authentication with a hardcoded user for demo purposes.
 
 ### Login Credentials
-- **Username**: `admin`
+- **Email**: `admin@flux.com`
 - **Password**: `password`
 
 ### Get Authentication Token
@@ -204,7 +118,7 @@ The application uses JWT authentication with a simple hardcoded user for demo pu
 
 ```json
 {
-  "username": "admin",
+  "email": "admin@flux.com",
   "password": "password"
 }
 ```
@@ -220,21 +134,21 @@ The application uses JWT authentication with a simple hardcoded user for demo pu
 
 ### Authentication Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/login` | Login and get JWT token |
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/api/auth/login` | Login and get JWT token | No |
 
 ### Leads Management Endpoints
 
-All endpoints require JWT token in the `Authorization` header: `Bearer <token>`
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/leads` | Get all leads | No |
+| GET | `/api/leads/{id}` | Get lead by ID | Yes |
+| POST | `/api/leads` | Create new lead | Yes |
+| PUT | `/api/leads/{id}` | Update existing lead | Yes |
+| DELETE | `/api/leads/{id}` | Delete lead | Yes |
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/leads` | Get all leads |
-| GET | `/api/leads/{id}` | Get lead by ID |
-| POST | `/api/leads` | Create new lead |
-| PUT | `/api/leads/{id}` | Update existing lead |
-| DELETE | `/api/leads/{id}` | Delete lead |
+**Note**: Authenticated endpoints require JWT token in the `Authorization` header: `Bearer <token>`
 
 ### API Usage Examples
 
@@ -243,7 +157,7 @@ All endpoints require JWT token in the `Authorization` header: `Bearer <token>`
 ```bash
 curl -X POST http://localhost:8080/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"username": "admin", "password": "password"}'
+  -d '{"email": "admin@flux.com", "password": "password"}'
 ```
 
 #### 2. Create a new lead
@@ -260,14 +174,13 @@ curl -X POST http://localhost:8080/api/leads \
   }'
 ```
 
-#### 3. Get all leads
+#### 3. Get all leads (no auth required)
 
 ```bash
-curl -X GET http://localhost:8080/api/leads \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+curl -X GET http://localhost:8080/api/leads
 ```
 
-#### 4. Get lead by ID
+#### 4. Get lead by ID (auth required)
 
 ```bash
 curl -X GET http://localhost:8080/api/leads/1 \
@@ -313,8 +226,6 @@ CREATE TABLE leads (
 
 ## 🔧 Configuration
 
-### Application Properties
-
 Key configuration properties in `application.yml`:
 
 ```yaml
@@ -337,201 +248,22 @@ server:
 jwt:
   secret: my-very-very-secret-key-for-leads
   expiration-ms: 3600000  # 1 hour
+
+api:
+  source: leads-management-system-api
 ```
 
-### Environment Variables
+## �️ Error Handling
 
-You can override configuration using environment variables:
+The application includes comprehensive error handling:
 
-```bash
-export SPRING_R2DBC_URL=r2dbc:postgresql://localhost:5432/your_database
-export SPRING_R2DBC_USERNAME=your_username
-export SPRING_R2DBC_PASSWORD=your_password
-export JWT_SECRET=your-jwt-secret
-export SERVER_PORT=8080
-```
+- **Custom Exceptions**: `BaseException`, `LeadNotFoundException`, `DuplicateEmailException`, `InvalidDataException`
+- **Global Exception Handler**: `ApiAdvice` for consistent error responses
+- **Structured Error Responses**: All errors return structured JSON responses with error codes and messages
 
 ## 🧪 Running Tests
 
 ```bash
 # Run all tests
 .\mvnw test
-
-# Run tests with coverage
-.\mvnw test jacoco:report
-
-# Run specific test class
-.\mvnw test -Dtest=LeadsManagementSystemApplicationTests
 ```
-
-## 🐳 Docker Support
-
-### Create Dockerfile
-
-```dockerfile
-FROM openjdk:21-jre-slim
-
-WORKDIR /app
-
-COPY target/leads-management-system-0.0.1-SNAPSHOT.jar app.jar
-
-EXPOSE 8080
-
-CMD ["java", "-jar", "app.jar"]
-```
-
-### Build and Run with Docker
-
-```bash
-# Build the application
-.\mvnw clean package
-
-# Build Docker image
-docker build -t leads-management-system .
-
-# Run with Docker Compose (create docker-compose.yml first)
-docker-compose up
-```
-
-### Docker Compose Setup
-
-Create `docker-compose.yml`:
-
-```yaml
-version: '3.8'
-services:
-  postgres:
-    image: postgres:15
-    environment:
-      POSTGRES_PASSWORD: Tshepo123
-      POSTGRES_DB: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-  app:
-    build: .
-    ports:
-      - "8080:8080"
-    depends_on:
-      - postgres
-    environment:
-      SPRING_R2DBC_URL: r2dbc:postgresql://postgres:5432/postgres
-      SPRING_R2DBC_USERNAME: postgres
-      SPRING_R2DBC_PASSWORD: Tshepo123
-
-volumes:
-  postgres_data:
-```
-
-## 🛠 Development
-
-### IDE Setup
-
-#### IntelliJ IDEA
-1. Import as Maven project
-2. Enable Lombok plugin
-3. Enable annotation processing
-4. Set Project SDK to Java 21
-
-#### VS Code
-1. Install Java Extension Pack
-2. Install Spring Boot Extension Pack
-3. Open project folder
-
-### Hot Reload
-
-The application includes Spring Boot DevTools for hot reload during development. Changes to Java files will automatically restart the application.
-
-## 🚨 Troubleshooting
-
-### Common Issues
-
-#### 1. Database Connection Error
-```
-Error: Connection refused
-```
-**Solution**: Ensure PostgreSQL is running and credentials are correct.
-
-#### 2. Port Already in Use
-```
-Error: Port 8080 is already in use
-```
-**Solution**: 
-- Kill process using port 8080: `netstat -ano | findstr :8080`
-- Or change port in `application.yml`: `server.port: 8081`
-
-#### 3. Java Version Error
-```
-Error: Java version not supported
-```
-**Solution**: Ensure Java 21+ is installed and set as default.
-
-#### 4. Maven Build Fails
-```
-Error: Could not resolve dependencies
-```
-**Solution**: 
-- Clear Maven cache: `.\mvnw dependency:purge-local-repository`
-- Check internet connection
-- Verify Maven settings
-
-#### 5. JWT Token Issues
-```
-Error: 401 Unauthorized
-```
-**Solution**:
-- Ensure you're including the Bearer token in Authorization header
-- Check token hasn't expired (default: 1 hour)
-- Verify JWT secret configuration
-
-### Logs
-
-View application logs:
-- Console output during startup
-- Enable debug logging by adding to `application.yml`:
-  ```yaml
-  logging:
-    level:
-      com.mamabologtub: DEBUG
-      org.springframework.security: DEBUG
-  ```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 👨‍💻 Author
-
-**Tshepo M Mahudu**
-- GitHub: [@MamaboloGtub](https://github.com/MamaboloGtub)
-
-## 🙏 Acknowledgments
-
-- Spring Boot team for the excellent framework
-- PostgreSQL team for the reliable database
-- JWT.io for JWT implementation guidance
-
----
-
-## 📞 Support
-
-If you encounter any issues or have questions:
-
-1. Check the [Troubleshooting](#-troubleshooting) section
-2. Search existing issues on GitHub
-3. Create a new issue with detailed description
-4. Contact the maintainer
-
----
-
-**Happy Coding! 🚀**
